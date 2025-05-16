@@ -26,9 +26,18 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify --file simple-api/pom.xml
 
+      - name: SonarCloud Scan
+        run: mvn -B verify sonar:sonar \
+          -Dsonar.projectKey=test11236 \
+          -Dsonar.organization=test \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          --file simple-api/pom.xml
+
   build-and-push-docker-image:
     needs: test-backend
     runs-on: ubuntu-24.04
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
