@@ -27,9 +27,9 @@ jobs:
         run: mvn clean verify --file simple-api/pom.xml
 
       - name: SonarCloud Scan
-        run: mvn -B verify sonar:sonar \
-          -Dsonar.projectKey=test11236 \
-          -Dsonar.organization=test \
+        run: mvn verify sonar:sonar \
+          -Dsonar.projectKey=mehdisaadiiii_TP2-DevOPs \
+          -Dsonar.organization=mehdisaadiiii92 \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           --file simple-api/pom.xml
