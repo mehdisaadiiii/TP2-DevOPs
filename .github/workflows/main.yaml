@@ -13,7 +13,6 @@ on:
 jobs:
   test-backend:
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,11 +30,9 @@ jobs:
         working-directory: simple-api
         run: mvn verify sonar:sonar -Dsonar.projectKey=mehdisaadiiii_TP2-DevOPs -Dsonar.organization=mehdisaadiiii92 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-
   build-and-push-docker-image:
     needs: test-backend
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,3 +70,33 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:${{ env.SHORT_SHA }}
+
+  deploy-ansible:
+    needs: build-and-push-docker-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ansible repo
+        uses: actions/checkout@v4
+        with:
+          repository: mehdi-saadi-engineer/TP3-DevOps
+          path: ansible
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Deploy via Ansible
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbook.yml
+          directory: ansible
+          inventory: inventories/setup.yml
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          options: |
+            --extra-vars "ansible_python_interpreter=/usr/bin/python3"
