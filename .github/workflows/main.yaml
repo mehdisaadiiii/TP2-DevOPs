@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build and test with Maven
-        run: mvn clean verify --file simple-api/pom.xml
+        run: mvn clean verify --file simple-api/pom.xmlskdcjbosjxs
 
       - name: SonarCloud Scan
         working-directory: simple-api
