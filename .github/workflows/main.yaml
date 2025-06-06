@@ -62,6 +62,35 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:${{ env.SHORT_SHA }}
 
+      # Checkout front repo
+      - name: Checkout front repo
+        uses: actions/checkout@v4
+        with:
+          repository: takima-training/devops-front
+          ref: main  # ou la branche par défaut du front
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: front
+
+      # Setup Node 16 pour builder le front
+      - name: Setup Node 16
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      # Installer les dépendances front et builder
+      - name: Install front dependencies & build
+        working-directory: front
+        run: |
+          npm install -g npm@6
+          npm install
+          npm run build
+
+      # Copier le front buildé vers http-server/html
+      - name: Copy front build to http-server
+        run: |
+          rm -rf http-server/html/*
+          cp -r front/dist/* http-server/html/
+
       - name: Build and push httpd image
         uses: docker/build-push-action@v6
         with:
