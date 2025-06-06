@@ -2,13 +2,13 @@
 - name: Launch database container
   docker_container:
     name: database
-    image: "{{ dockerhub_username }}/tp-devops-database:latest"
+    image: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/tp-devops-database:latest"
     pull: yes
     state: started
     restart_policy: always
     networks:
       - name: my_network
     env:
-      POSTGRES_PASSWORD: pwd
+      POSTGRES_PASSWORD: "{{ lookup('env', 'DATABASE_PASSWORD') }}"
     volumes:
       - db-volume:/var/lib/postgresql/data
