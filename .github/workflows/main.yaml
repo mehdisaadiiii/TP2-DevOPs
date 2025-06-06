@@ -28,11 +28,7 @@ jobs:
 
       - name: SonarCloud Scan
         working-directory: simple-api
-        run: mvn verify sonar:sonar \
-          -Dsonar.projectKey=mehdisaadiiii_TP2-DevOPs \
-          -Dsonar.organization=mehdisaadiiii92 \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn verify sonar:sonar -Dsonar.projectKey=mehdisaadiiii_TP2-DevOPs -Dsonar.organization=mehdisaadiiii92 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   build-and-push-docker-image:
     needs: test-backend
@@ -76,7 +72,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:${{ env.SHORT_SHA }}
 
   deploy-ansible:
-    needs: build-and-push-docker-image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ansible repo
@@ -92,7 +87,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Configure SSH key
+      - name: Write SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -103,6 +98,7 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook -i inventories/setup.yml playbook.yml \
-            --private-key ~/.ssh/id_rsa \
-            --extra-vars "ansible_python_interpreter=/usr/bin/python3"
+          ansible-playbook -i inventories/setup.yml playbook.yml --private-key ~/.ssh/id_rsa --extra-vars "ansible_python_interpreter=/usr/bin/python3"
+
+
+
