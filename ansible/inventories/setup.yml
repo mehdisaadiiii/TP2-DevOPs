@@ -4,5 +4,6 @@ all:
   children:
     prod:
       hosts:
-        mehdi.saadi.takima.cloud: {}
+        mehdi.saadi.takima.cloud:
+
 
