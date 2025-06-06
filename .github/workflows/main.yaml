@@ -94,9 +94,9 @@ jobs:
       - name: Deploy via Ansible
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbook.yml
-          directory: ansible
-          inventory: inventories/setup.yml
+          playbook: ansible/playbook.yml
+          inventory: ansible/inventories/setup.yml
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           options: |
             --extra-vars "ansible_python_interpreter=/usr/bin/python3"
+
