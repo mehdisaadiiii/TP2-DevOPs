@@ -2,14 +2,14 @@
 - name: Launch application container
   docker_container:
     name: simple-api
-    image: "{{ dockerhub_username }}/tp-devops-simple-api:latest"
+    image: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/tp-devops-simple-api:latest"
     pull: yes
     state: started
     restart_policy: always
     networks:
       - name: my_network
     env:
-      DATABASE_HOST: database
-      DATABASE_PASSWORD: pwd
+      DATABASE_HOST: "{{ lookup('env', 'DATABASE_HOST') }}"
+      DATABASE_PASSWORD: "{{ lookup('env', 'DATABASE_PASSWORD') }}"
     ports:
       - "8080:8080"
