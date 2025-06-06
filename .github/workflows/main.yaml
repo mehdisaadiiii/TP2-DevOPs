@@ -62,35 +62,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:${{ env.SHORT_SHA }}
 
-      # Checkout front repo
-      - name: Checkout front repo
-        uses: actions/checkout@v4
-        with:
-          repository: takima-training/devops-front
-          ref: main  # ou la branche par défaut du front
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: front
-
-      # Setup Node 16 pour builder le front
-      - name: Setup Node 16
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-
-      # Installer les dépendances front et builder
-      - name: Install front dependencies & build
-        working-directory: front
-        run: |
-          npm install -g npm@6
-          npm install
-          npm run build
-
-      # Copier le front buildé vers http-server/html
-      - name: Copy front build to http-server
-        run: |
-          rm -rf http-server/html/*
-          cp -r front/dist/* http-server/html/
-
       - name: Build and push httpd image
         uses: docker/build-push-action@v6
         with:
@@ -106,24 +77,24 @@ jobs:
     steps:
       - name: Checkout Ansible repo
         uses: actions/checkout@v4
-  
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-  
+
       - name: Install Ansible
         run: |
           python -m pip install --upgrade pip
           pip install ansible
-  
+
       - name: Write SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan mehdi.saadi.takima.cloud >> ~/.ssh/known_hosts
-  
+
       - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
@@ -132,6 +103,3 @@ jobs:
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
           ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml --private-key ~/.ssh/id_rsa --extra-vars "ansible_python_interpreter=/usr/bin/python3"
-
-
-
