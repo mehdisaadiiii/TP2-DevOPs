@@ -1,0 +1,12 @@
+---
+- name: Launch proxy container
+  docker_container:
+    name: httpd
+    image: "{{ dockerhub_username }}/tp-devops-httpd:latest"
+    pull: yes
+    state: started
+    restart_policy: always
+    networks:
+      - name: my_network
+    ports:
+      - "80:80"

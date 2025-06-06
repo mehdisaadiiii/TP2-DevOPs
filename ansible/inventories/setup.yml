@@ -1,0 +1,9 @@
+all:
+  vars:
+    ansible_user: admin
+  children:
+    prod:
+      hosts:
+        mehdi.saadi.takima.cloud:
+
+
