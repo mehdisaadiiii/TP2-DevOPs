@@ -3,6 +3,7 @@
   docker_container:
     name: httpd
     image: "{{ dockerhub_username }}/tp-devops-httpd:latest"
+    pull: yes
     state: started
     restart_policy: always
     networks:

@@ -3,6 +3,7 @@
   docker_container:
     name: simple-api
     image: "{{ dockerhub_username }}/tp-devops-simple-api:latest"
+    pull: yes
     state: started
     restart_policy: always
     networks:
@@ -10,5 +11,5 @@
     env:
       DATABASE_HOST: database
       DATABASE_PASSWORD: pwd
-    ports: 
-      "8080:8080"
+    ports:
+      - "8080:8080"

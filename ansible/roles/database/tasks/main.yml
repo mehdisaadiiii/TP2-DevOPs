@@ -3,6 +3,7 @@
   docker_container:
     name: database
     image: "{{ dockerhub_username }}/tp-devops-database:latest"
+    pull: yes
     state: started
     restart_policy: always
     networks:
